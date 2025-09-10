@@ -1,0 +1,10 @@
+<h1>Customer Details</h1>
+<div class="customer-details" style="border:1px solid #ddd; padding:16px; border-radius:8px; max-width:400px;">
+    <p><strong>ID:</strong> {{ customer.id }}</p>
+    <p><strong>Name:</strong> {{ customer.name }}</p>
+    <ul style="list-style:none; padding:0;">
+        <li><strong>Email:</strong> <a href="mailto:{{ customer.email }}">{{ customer.email }}</a></li>
+        <li><strong>Phone:</strong> <a href="tel:{{ customer.phone }}">{{ customer.phone }}</a></li>
+        <li><strong>Address:</strong> {{ customer.address }}</li>
+    </ul>
+</div>

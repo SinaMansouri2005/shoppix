@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main navigation menu -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <!-- برند فروشگاه -->
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-shop"></i>
+            Our Shop
+        </a>
+    <form class="d-flex" method="get" action="{% url 'product_search' %}">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search...">
+        <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
+
+
+        <!-- نمایش نام کاربر در سمت چپ -->
+        {% if user.is_authenticated %}
+            <span class="navbar-text ms-3 text-white fw-bold">
+                <i class="bi bi-person-circle"></i>
+                {{ user.username }}
+            </span>
+        {% endif %}
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'product_list' %}">
+                        <i class="bi bi-grid"></i>
+                        Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart:cart_detail' %}">
+                        <i class="bi bi-cart"></i>
+                        Shopping Cart
+                        {% if cart.total_quantity > 0 %}
+                            <span class="badge bg-danger">{{ cart.total_quantity }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <!-- فرم Logout با POST -->
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link" style="display:inline; padding:0;">
+                                <i class="bi bi-box-arrow-left"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">
+                            <i class="bi bi-person-plus"></i>
+                            Register
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main content -->
+<main class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    <!-- Specific page content goes here -->
+    {% endblock %}
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
