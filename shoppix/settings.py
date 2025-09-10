@@ -58,12 +58,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ecommerce_shop.urls'
+ROOT_URLCONF = 'shoppix.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'ecommerce_shop' / 'templates'],  # Add this line
+        'DIRS': [BASE_DIR / 'shoppix' / 'templates'],  # Add this line
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +76,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ecommerce_shop.wsgi.application'
+WSGI_APPLICATION = 'shoppix.wsgi.application'
+ASGI_APPLICATION = 'shoppix.asgi.application'
 
 
 # Database
