@@ -8,3 +8,9 @@ class CustomerCreationForm(UserCreationForm):
     class Meta:
         model = Customer
         fields = ("username", "email")  
+
+
+class CustomerEditform(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ["username" ,"email" ,"phone" ,"address"]
