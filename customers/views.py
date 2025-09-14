@@ -38,7 +38,7 @@ def profile_detail(request):
 @login_required 
 def profile_edit(request):
     if request.method == 'POST':
-        form  = CustomerEditform(request.POST , instance= request.user)
+        form  = CustomerEditform(request.POST ,request.FILES, instance= request.user)
         if form.is_valid():
             form.save()
             return redirect('customers:profile')

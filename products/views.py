@@ -1,7 +1,9 @@
 # filepath: c:\Users\sinar\Desktop\project\ecommerce_shop\products\views.py
-from .models import Product , Category
-from django.shortcuts import render , get_object_or_404
+from .models import Product , Category , Review
+from django.shortcuts import render , get_object_or_404 ,redirect
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from .forms import ReviewForm
 
 
 def product_list(request , category_slug = None):
@@ -29,3 +31,20 @@ def product_search(request):
     )if query else Product.objects.none()
 
     return render(request , "products/product_search.html"  , {'products':products  , 'query': query})
+
+@login_required
+def add_review(request , product_id):
+    product = get_object_or_404(Product  , product_id)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit= False)
+            review.product = product
+            review.customer = request.user
+            review.save()
+            return redirect("product_detail" , product_id = product.id)
+        
+    else:
+        form = ReviewForm()
+    return render(request , "products/add_review.html" , {"form":form , "product":product})

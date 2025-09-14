@@ -13,4 +13,4 @@ class CustomerCreationForm(UserCreationForm):
 class CustomerEditform(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ["username" ,"email" ,"phone" ,"address"]
+        fields = ["username" ,"email" ,"phone" ,"address" , "profile_image"]
