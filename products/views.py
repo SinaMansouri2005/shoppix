@@ -4,6 +4,8 @@ from django.shortcuts import render , get_object_or_404 ,redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
+from django.db import IntegrityError
+from django.contrib import messages
 
 
 def product_list(request , category_slug = None):
@@ -20,23 +22,31 @@ def product_list(request , category_slug = None):
                                                           'current_category':category})
 
 def product_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-    reviews  =  product.reviews.all()
+    product = get_object_or_404(Product, pk=pk)
+    reviews = Review.objects.filter(product=product)
     avg_rating = product.calculate_avg_rating()
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
-            review = form.save(commit= False)
+            review = form.save(commit=False)
             review.product = product
-            review.customer = request.user
-            review.save()
-            return redirect("product_detail" , pk = product.id)
-        
+            review.user = request.user
+            try:
+                review.save()
+                messages.success(request, "Your review has been added successfully.")
+            except IntegrityError:
+                messages.error(request, "You have already commented on this product.")
+            return redirect("product_detail", pk=product.pk)
     else:
         form = ReviewForm()
 
-    return render(request, 'products/product_detail.html', {'product': product , 'reviews':reviews ,'avg_rating':avg_rating ,'form':form})
-
+    return render(request, "products/product_detail.html", {
+        "product": product,
+        "reviews": reviews,
+        "avg_rating": avg_rating,
+        "form": form,
+    })
 
 
 def product_search(request):
@@ -46,19 +56,3 @@ def product_search(request):
 
     return render(request , "products/product_search.html"  , {'products':products  , 'query': query})
 
-@login_required
-def add_review(request , product_id):
-    product = get_object_or_404(Product  , product_id)
-
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit= False)
-            review.product = product
-            review.customer = request.user
-            review.save()
-            return redirect("product_detail" , pk = product.id)
-        
-    else:
-        form = ReviewForm()
-    return render(request , "products/add_review.html" , {"form":form , "product":product})
