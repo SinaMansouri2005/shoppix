@@ -41,7 +41,7 @@ def profile_edit(request):
         form  = CustomerEditform(request.POST ,request.FILES, instance= request.user)
         if form.is_valid():
             form.save()
-            return redirect('customers:profile')
+            return redirect('profile_detail')
     else:
             form = CustomerEditform(instance= request.user)
     return render(request , 'customers/edit_profile.html' , {"form": form})

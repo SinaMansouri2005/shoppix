@@ -21,7 +21,21 @@ def product_list(request , category_slug = None):
 
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    return render(request, 'products/product_detail.html', {'product': product})
+    reviews  =  product.reviews.all()
+    avg_rating = product.calculate_avg_rating()
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit= False)
+            review.product = product
+            review.customer = request.user
+            review.save()
+            return redirect("product_detail" , pk = product.id)
+        
+    else:
+        form = ReviewForm()
+
+    return render(request, 'products/product_detail.html', {'product': product , 'reviews':reviews ,'avg_rating':avg_rating ,'form':form})
 
 
 
@@ -43,7 +57,7 @@ def add_review(request , product_id):
             review.product = product
             review.customer = request.user
             review.save()
-            return redirect("product_detail" , product_id = product.id)
+            return redirect("product_detail" , pk = product.id)
         
     else:
         form = ReviewForm()
