@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
 from django.db import IntegrityError
 from django.contrib import messages
+from rest_framework import generics
+from django.db.models import Avg
+from .serializers import ReviewSerializer , ProductSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 def product_list(request , category_slug = None):
@@ -56,3 +60,27 @@ def product_search(request):
 
     return render(request , "products/product_search.html"  , {'products':products  , 'query': query})
 
+
+
+
+
+class ProductListAPI(generics.ListAPIView):
+    queryset = Product.objects.all().annotate(avg_rating = Avg('reviews__rating'))
+    serializer_class = ProductSerializer
+
+
+class ProductDetailAPI (generics.RetrieveAPIView):
+    queryset = Product.objects.all().annotate(avg_rating = Avg('reviews__rating'))  
+    serializer_class = ProductSerializer
+
+
+
+class ReviewListCreateAPI (generics.ListAPIView):
+    serializer_class  = ReviewSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        prodcut_id =  self.kwargs['product_id']
+        return Review.objects.filter(product_id = prodcut_id)
+    
+    def peform_create(self , serializer):
+        serializer.save(product_id = self.kwargs['product_id'] , user = self.request.user)
