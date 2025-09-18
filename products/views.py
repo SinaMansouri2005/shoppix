@@ -64,23 +64,7 @@ def product_search(request):
 
 
 
-class ProductListAPI(generics.ListAPIView):
-    queryset = Product.objects.all().annotate(avg_rating = Avg('reviews__rating'))
-    serializer_class = ProductSerializer
-
-
-class ProductDetailAPI (generics.RetrieveAPIView):
-    queryset = Product.objects.all().annotate(avg_rating = Avg('reviews__rating'))  
-    serializer_class = ProductSerializer
 
 
 
-class ReviewListCreateAPI (generics.ListAPIView):
-    serializer_class  = ReviewSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    def get_queryset(self):
-        prodcut_id =  self.kwargs['product_id']
-        return Review.objects.filter(product_id = prodcut_id)
-    
-    def peform_create(self , serializer):
-        serializer.save(product_id = self.kwargs['product_id'] , user = self.request.user)
+
