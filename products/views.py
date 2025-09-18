@@ -8,7 +8,6 @@ from django.db import IntegrityError
 from django.contrib import messages
 from rest_framework import generics
 from django.db.models import Avg
-from .serializers import ReviewSerializer , ProductSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
@@ -64,7 +63,17 @@ def product_search(request):
 
 
 
+def home_products(request):
+    discounted_items = Product.objects.filter(discount_price__isnull = False).order_by("id")[:10]
+    top_selling_items = Product.objects.order_by("-sold_count")[:10]
+    return render(request , "shop/home/html" , {"discounted_items":discounted_items , "top_selling_items":top_selling_items})
 
 
 
+def discounted_products_list(request):
+    products = Product.objects.filter(discount_price__isnull=False)
+    return render(request, "shop/product_list.html", {"products": products, "title": "محصولات تخفیف‌دار"})
 
+def best_selling_products_list(request):
+    products = Product.objects.order_by("-sold_count")
+    return render(request, "shop/product_list.html", {"products": products, "title": "محصولات پرفروش"})

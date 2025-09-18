@@ -1,0 +1,62 @@
+{% extends "home.html" %}
+
+{% block content %}
+
+<h2 class="mb-3">🔥 محصولات تخفیف‌دار</h2>
+<div id="discountCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for product in discounted_products %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="d-block w-100" alt="{{ product.name }}">
+        {% endif %}
+        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+          <h5>{{ product.name }}</h5>
+          <p>
+            <del class="text-danger">{{ product.price }} تومان</del>
+            <strong class="text-success">{{ product.final_price }} تومان</strong>
+          </p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">هیچ محصول تخفیف‌داری وجود ندارد.</p>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#discountCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#discountCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+<a href="{% url 'discounted_products' %}" class="btn btn-outline-primary">مشاهده همه تخفیف‌ها</a>
+
+<hr class="my-5">
+
+<h2 class="mb-3">🏆 محصولات پرفروش</h2>
+<div id="bestSellingCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for product in best_selling_products %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="d-block w-100" alt="{{ product.name }}">
+        {% endif %}
+        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+          <h5>{{ product.name }}</h5>
+          <p>{{ product.final_price }} تومان</p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">هیچ محصول پرفروشی وجود ندارد.</p>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#bestSellingCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bestSellingCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+<a href="{% url 'best_selling_products' %}" class="btn btn-outline-success">مشاهده همه پرفروش‌ها</a>
+
+{% endblock %}
